@@ -1,0 +1,61 @@
+
+<script src="httpRequest.js"></script>
+<script>
+    /*    
+      In most cases, the url is local (i.e. /testapi). 
+      In order for the external urls (i,e, http://www.7timer.info/bin/api.pl?lon=113.17&lat=23.09&product=astro&output=json') 
+      to work, your web servers must allow external requests via adding Response headers as the following expamples:
+      
+      "Access-Control-Allow-Origin: *",
+      "Access-Control-Allow-Headers: Origin",
+      "X-Requested-With: Content-Type, Accept"      
+    */
+    let url = '/testapi';
+    var q = new quenubesHTTP (
+      url,   /* URL */
+      'GET', /* Method POST, GET, DELETE,... */
+      ['content-Type:application/json'], /* array of headers [] for empty */
+      {}, /* data {} for null */
+      function (res) {   
+          if(res.timedOut){
+            console.log('error: request timedout');
+            return;
+          }else if(res.errMessage.length > 0){
+            console.log('error: '+res.errMessage);
+            return;
+          }
+          if(res.statusCode == 200){
+            console.log(res.responseText);
+          }else{
+            /* Custom mesage according to the returned http status code */;
+            switch(res.statusCode){
+              case 404:
+                /* Not Found */
+                console.log('error: borken link');
+                break;
+              case 403:
+                /* Forbidden */
+                console.log('error: permission denied');
+                break;
+          }        
+        }
+      }        
+    );
+    q.call();
+    
+    /* Short example: */
+    function postUserId(useId){
+      let q = new quenubesHTTP ('api/makpostuserId','POST',['X-UserID:'+useId+''],{},
+        function (res) {   
+            if(res.statusCode == 200){
+              /* Code on success */
+            }else{
+              /* Code on failure */
+            }
+        }        
+      );
+      q.call();
+    }        
+</script>
+    
+    
