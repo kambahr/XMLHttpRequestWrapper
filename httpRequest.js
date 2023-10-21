@@ -1,12 +1,12 @@
 /* quenubesHTTP simplifies usage of the XMLHttpRequest object. */
 class quenubesHTTP {
-    constructor(url,method, headers,data, callbckFunc) {
+    constructor(url,method, headers,data, callbckFunc,isFormData) {     
       this.url = url;
       this.method = method.toUpperCase();
       this.headers = headers;
       this.data = data;
+      this.isFormData = (isFormData == undefined ? false : isFormData);
       this.responseCallback = callbckFunc;
-  
       /* Initialize the Response */
       this.res = {
         statusCode : 0,
@@ -31,9 +31,13 @@ class quenubesHTTP {
             }
           }
         }
-      if(this.data != null){
-        let j = JSON.stringify(this.data);
-        xhttp.send(j);
+      if(this.data != null){       
+        if(this.isFormData){
+          xhttp.send(this.data);
+        }else{
+          let j = JSON.stringify(this.data);
+          xhttp.send(j);  
+        }
       }else{
         xhttp.send();
       }      
@@ -61,4 +65,4 @@ class quenubesHTTP {
           }   
         }    
     } /* End of call function */
-  }
+}
